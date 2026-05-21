@@ -80,3 +80,5 @@ Ambos modos proyectan exactamente estas columnas:
   - `UserStoryWorkItemId` y `UserStoryTitle` hacia Tasks hijas.
 - `TrackCode` y `TrackName` ahora se calculan desde `FeatureTitle` heredado, por lo que filas hijas con padre válido **no** deben quedar en `T00`.
 - `T00 / Track sin clasificar` queda reservado para registros realmente sin Feature padre detectable.
+
+- Regla aplicada: User Stories y Tasks no requieren prefijo Txx en su propio título; heredan Track desde Feature ancestro.
