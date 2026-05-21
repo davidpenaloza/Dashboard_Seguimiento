@@ -1,9 +1,6 @@
-# Limitaciones del CSV actual (MVP)
+# Limitaciones del modo CSV
 
-- El CSV actual sirve para un MVP ejecutivo-operativo.
-- No permite roadmap temporal real si no trae fechas (Due/Target/Start/Closed).
-- No permite medir lead time/cycle time sin Created Date, Changed Date y Closed Date.
-- No permite priorización real sin Priority.
-- No permite seguimiento por sprint sin Iteration Path.
-- No permite gestionar dependencias/riesgos robustamente sin tabla complementaria.
-- Muchos registros pueden venir sin Assigned To, afectando trazabilidad de responsables.
+- CSV es respaldo/desarrollo, no fuente principal productiva.
+- Puede no incluir Parent/fechas/board, dejando jerarquía o roadmap incompletos.
+- Requiere exportación manual y no asegura actualización automática.
+- Alto riesgo de items sin owner/tags/estado homogéneo.
