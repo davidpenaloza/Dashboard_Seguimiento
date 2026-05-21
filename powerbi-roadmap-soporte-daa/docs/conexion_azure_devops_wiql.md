@@ -1,6 +1,6 @@
 # Conexión Azure DevOps por WIQL Query ID
 
-Este dashboard usa como fuente principal el patrón del Reporte Gestión de Soporte: `VSTS.AccountContents` + `Functions[WiqlRunFlatWorkItemQueryById]` en modo Import.
+Este dashboard usa como fuente principal el patrón de Reporte Gestión de Soporte: `VSTS.AccountContents` + ejecución de WIQL por ID en modo Import.
 
 ## Parámetros
 - `pAdoUrl`
@@ -9,10 +9,17 @@ Este dashboard usa como fuente principal el patrón del Reporte Gestión de Sopo
 - `pAdoTeam`
 - `pAdoQueryId`
 
-## Patrón técnico
+## Implementación actual
+La función quedó implementada localmente en `FunctionsAzureDevOps`:
+
 ```powerquery
 contents = (o) => VSTS.AccountContents(pAdoUrl, o)
-Functions[WiqlRunFlatWorkItemQueryById](contents, pAdoUrl, [Collection=pAdoCollection, Project=pAdoProject, Team=pAdoTeam], pAdoQueryId)
+FunctionsAzureDevOps[FnWiqlRunFlatWorkItemQueryById](
+  contents,
+  pAdoUrl,
+  [Collection=pAdoCollection, Project=pAdoProject, Team=pAdoTeam],
+  pAdoQueryId
+)
 ```
 
 ## Credenciales

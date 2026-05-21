@@ -1,7 +1,7 @@
 let
-    // Patrón técnico requerido: VSTS.AccountContents + Functions[WiqlRunFlatWorkItemQueryById]
+    // Patrón técnico requerido: VSTS.AccountContents + FunctionsAzureDevOps[FnWiqlRunFlatWorkItemQueryById]
     contents = (o as record) => VSTS.AccountContents(pAdoUrl, o),
-    RawWiql = Functions[WiqlRunFlatWorkItemQueryById](
+    RawWiql = FunctionsAzureDevOps[FnWiqlRunFlatWorkItemQueryById](
         contents,
         pAdoUrl,
         [Collection = pAdoCollection, Project = pAdoProject, Team = pAdoTeam],

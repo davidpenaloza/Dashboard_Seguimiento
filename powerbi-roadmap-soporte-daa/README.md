@@ -1,7 +1,7 @@
 # powerbi-roadmap-soporte-daa
 
 ## Fuente principal y modos
-- **Principal:** WIQL Query ID (Azure DevOps) via `VSTS.AccountContents` + `Functions[WiqlRunFlatWorkItemQueryById]`.
+- **Principal:** WIQL Query ID (Azure DevOps) via `VSTS.AccountContents` + `FunctionsAzureDevOps[FnWiqlRunFlatWorkItemQueryById]`.
 - **Secundaria:** CSV local (`pSourceMode=CSV`).
 - **Alternativa futura:** OData (`pSourceMode=OData`).
 
