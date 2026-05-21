@@ -1,0 +1,108 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "cd_tbl_det",
+  "position": {
+    "x": 640,
+    "y": 160,
+    "z": 1,
+    "height": 480,
+    "width": 610,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "WorkItemId"
+                }
+              },
+              "queryRef": "Fact_WorkItems.WorkItemId",
+              "nativeQueryRef": "WorkItemId"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "WorkItemType"
+                }
+              },
+              "queryRef": "Fact_WorkItems.WorkItemType",
+              "nativeQueryRef": "WorkItemType"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "HierarchyStatus"
+                }
+              },
+              "queryRef": "Fact_WorkItems.HierarchyStatus",
+              "nativeQueryRef": "HierarchyStatus"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "TrackCode"
+                }
+              },
+              "queryRef": "Fact_WorkItems.TrackCode",
+              "nativeQueryRef": "TrackCode"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "UserStoryWorkItemId"
+                }
+              },
+              "queryRef": "Fact_WorkItems.UserStoryWorkItemId",
+              "nativeQueryRef": "UserStoryWorkItemId"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "FeatureWorkItemId"
+                }
+              },
+              "queryRef": "Fact_WorkItems.FeatureWorkItemId",
+              "nativeQueryRef": "FeatureWorkItemId"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
