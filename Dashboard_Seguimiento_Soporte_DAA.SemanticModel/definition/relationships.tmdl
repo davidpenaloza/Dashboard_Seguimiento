@@ -1,0 +1,15 @@
+relationship 8d03f9eb-58a6-4178-95ac-449205941031
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_WorkItems.CreatedDate
+	toColumn: LocalDateTable_6a7987ca-88cd-4bf0-a18c-559b99d11917.Date
+
+relationship db811958-d8bc-4c0d-b860-e26457824448
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_WorkItems.ChangedDate
+	toColumn: LocalDateTable_50c502eb-42a3-4ff3-a2bb-3c5c286d5f17.Date
+
+relationship 055219da-e738-4634-9643-677acdf99381
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_WorkItems.ClosedDate
+	toColumn: LocalDateTable_1ce380b1-a29a-4dfc-bbc6-13326b8e285c.Date
+

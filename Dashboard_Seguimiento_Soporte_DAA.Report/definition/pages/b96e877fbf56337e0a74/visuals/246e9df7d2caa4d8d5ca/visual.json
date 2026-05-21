@@ -1,0 +1,168 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "246e9df7d2caa4d8d5ca",
+  "position": {
+    "x": 9.72644376899696,
+    "y": 289.84802431610944,
+    "z": 1,
+    "height": 89.483282674772042,
+    "width": 561.21580547112467,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Total Work Items"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Total Work Items",
+              "nativeQueryRef": "Total Work Items"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Total User Stories"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Total User Stories",
+              "nativeQueryRef": "Total User Stories"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Total Tracks"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Total Tracks",
+              "nativeQueryRef": "Total Tracks"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Total Tasks"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Total Tasks",
+              "nativeQueryRef": "Total Tasks"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Tasks Sin Responsable"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Tasks Sin Responsable",
+              "nativeQueryRef": "Tasks Sin Responsable"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "2513c31c0e8401c8dbe8",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_WorkItems"
+              }
+            },
+            "Property": "Total Work Items"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "86cdc8eb9f047f063337",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_WorkItems"
+              }
+            },
+            "Property": "Total User Stories"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "498304652e57c826eaa1",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_WorkItems"
+              }
+            },
+            "Property": "Total Tracks"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "c544e719894fd9bf4ec3",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_WorkItems"
+              }
+            },
+            "Property": "Total Tasks"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "1f606c5cc62197a3ee4c",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_WorkItems"
+              }
+            },
+            "Property": "Tasks Sin Responsable"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

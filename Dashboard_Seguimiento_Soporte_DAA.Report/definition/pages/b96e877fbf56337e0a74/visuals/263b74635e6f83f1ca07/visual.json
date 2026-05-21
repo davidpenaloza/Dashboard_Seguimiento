@@ -1,0 +1,167 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "263b74635e6f83f1ca07",
+  "position": {
+    "x": 27.23404255319149,
+    "y": 408.51063829787233,
+    "z": 3,
+    "height": 208.14589665653497,
+    "width": 667.23404255319156,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "WorkItemType"
+                }
+              },
+              "queryRef": "Fact_WorkItems.WorkItemType",
+              "nativeQueryRef": "WorkItemType",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Fact_WorkItems"
+                        }
+                      },
+                      "Property": "WorkItemId"
+                    }
+                  },
+                  "Function": 5
+                }
+              },
+              "queryRef": "CountNonNull(Fact_WorkItems.WorkItemId)",
+              "nativeQueryRef": "Recuento de WorkItemId"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "Fact_WorkItems"
+                      }
+                    },
+                    "Property": "WorkItemId"
+                  }
+                },
+                "Function": 5
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "d73a29577dc5af76a875",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_WorkItems"
+              }
+            },
+            "Property": "WorkItemType"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "72ba667133b921a7f76f",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Fact_WorkItems"
+                  }
+                },
+                "Property": "WorkItemId"
+              }
+            },
+            "Function": 5
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "2c03c459474f34815c6e",
+        "field": {
+          "Arithmetic": {
+            "Left": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "Fact_WorkItems"
+                      }
+                    },
+                    "Property": "WorkItemId"
+                  }
+                },
+                "Function": 5
+              }
+            },
+            "Right": {
+              "ScopedEval": {
+                "Expression": {
+                  "Aggregation": {
+                    "Expression": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Fact_WorkItems"
+                          }
+                        },
+                        "Property": "WorkItemId"
+                      }
+                    },
+                    "Function": 5
+                  }
+                },
+                "Scope": []
+              }
+            },
+            "Operator": 3
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      }
+    ]
+  }
+}

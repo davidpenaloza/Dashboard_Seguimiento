@@ -1,0 +1,22 @@
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-CL
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["pSourceMode","pCsvPath","pAdoUrl","pAdoCollection","pAdoProject","pAdoTeam","pAdoQueryId","pODataUrl","FunctionsAzureDevOps","transform_workitems_csv","transform_workitems_wiql","transform_workitems_odata","Fact_WorkItems"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Fact_WorkItems
+ref table DateTableTemplate_63456512-d14d-4afe-89e5-5c18984e248e
+ref table LocalDateTable_6a7987ca-88cd-4bf0-a18c-559b99d11917
+ref table LocalDateTable_50c502eb-42a3-4ff3-a2bb-3c5c286d5f17
+ref table LocalDateTable_1ce380b1-a29a-4dfc-bbc6-13326b8e285c
+
+ref cultureInfo es-ES
+

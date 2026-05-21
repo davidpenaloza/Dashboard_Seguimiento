@@ -1,0 +1,224 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "de7393117d15af623834",
+  "position": {
+    "x": 9.72644376899696,
+    "y": 29.179331306990882,
+    "z": 2,
+    "height": 231.48936170212767,
+    "width": 1121.4589665653496,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "TrackCode"
+                }
+              },
+              "queryRef": "Fact_WorkItems.TrackCode",
+              "nativeQueryRef": "TrackCode"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "TrackName"
+                }
+              },
+              "queryRef": "Fact_WorkItems.TrackName",
+              "nativeQueryRef": "TrackName"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "WorkItemType"
+                }
+              },
+              "queryRef": "Fact_WorkItems.WorkItemType",
+              "nativeQueryRef": "WorkItemType"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "DisplayTitle"
+                }
+              },
+              "queryRef": "Fact_WorkItems.DisplayTitle",
+              "nativeQueryRef": "DisplayTitle"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "StateNormalized"
+                }
+              },
+              "queryRef": "Fact_WorkItems.StateNormalized",
+              "nativeQueryRef": "StateNormalized"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "AssignedToName"
+                }
+              },
+              "queryRef": "Fact_WorkItems.AssignedToName",
+              "nativeQueryRef": "AssignedToName"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "HierarchyStatus"
+                }
+              },
+              "queryRef": "Fact_WorkItems.HierarchyStatus",
+              "nativeQueryRef": "HierarchyStatus"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "cc5c82ea98b77233b4cc",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_WorkItems"
+              }
+            },
+            "Property": "TrackCode"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "3e2c9679f3346734ae73",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_WorkItems"
+              }
+            },
+            "Property": "TrackName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "7332404af6d06100d87c",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_WorkItems"
+              }
+            },
+            "Property": "WorkItemType"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "0947c865d3fe081160b5",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_WorkItems"
+              }
+            },
+            "Property": "DisplayTitle"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "223bc56dd013cceb8a8c",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_WorkItems"
+              }
+            },
+            "Property": "StateNormalized"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "5f7650733b52af91b8a8",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_WorkItems"
+              }
+            },
+            "Property": "AssignedToName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "78b778be650772c0a96f",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_WorkItems"
+              }
+            },
+            "Property": "HierarchyStatus"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}
