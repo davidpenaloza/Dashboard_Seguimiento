@@ -1,0 +1,94 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "so_tbl",
+  "position": {
+    "x": 10,
+    "y": 300,
+    "z": 1,
+    "height": 340,
+    "width": 1240,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "IterationPath"
+                }
+              },
+              "queryRef": "Fact_WorkItems.IterationPath",
+              "nativeQueryRef": "IterationPath"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "TrackName"
+                }
+              },
+              "queryRef": "Fact_WorkItems.TrackName",
+              "nativeQueryRef": "TrackName"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "DisplayTitle"
+                }
+              },
+              "queryRef": "Fact_WorkItems.DisplayTitle",
+              "nativeQueryRef": "DisplayTitle"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "StateNormalized"
+                }
+              },
+              "queryRef": "Fact_WorkItems.StateNormalized",
+              "nativeQueryRef": "StateNormalized"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "AssignedToName"
+                }
+              },
+              "queryRef": "Fact_WorkItems.AssignedToName",
+              "nativeQueryRef": "AssignedToName"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
