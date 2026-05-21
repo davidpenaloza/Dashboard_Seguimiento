@@ -1,0 +1,361 @@
+expression pSourceMode = "CSV" meta [IsParameterQuery=true, Type="Any", IsParameterQueryRequired=true]
+	lineageTag: e6328b9b-e9ce-4893-a030-e7c5a554bef8
+
+	annotation PBI_ResultType = Text
+
+expression pCsvPath = "C:\temp\pbi\data.csv" meta [IsParameterQuery=true, Type="Any", IsParameterQueryRequired=true]
+	lineageTag: f6270b69-e9f7-44f7-9834-3ec47e41c7cf
+
+	annotation PBI_ResultType = Text
+
+	annotation PBI_NavigationStepName = Navegación
+
+expression pAdoUrl = "https://amsa-data.visualstudio.com" meta [IsParameterQuery=true, Type="Any", IsParameterQueryRequired=true]
+	lineageTag: 5e860518-287c-40dc-ad25-5c0d2202fe52
+
+	annotation PBI_ResultType = Text
+
+expression pAdoCollection = null meta [IsParameterQuery=true, Type="Any", IsParameterQueryRequired=false]
+	lineageTag: 32ed4351-d063-4900-82b3-117c22846922
+
+	annotation PBI_ResultType = Null
+
+expression pAdoProject = "Soporte" meta [IsParameterQuery=true, Type="Any", IsParameterQueryRequired=true]
+	lineageTag: 1f1c94df-9d43-47f8-93e3-c6bce389597f
+
+	annotation PBI_ResultType = Text
+
+expression pAdoTeam = "Soporte Team" meta [IsParameterQuery=true, Type="Any", IsParameterQueryRequired=true]
+	lineageTag: cd9abac7-23f0-4ed0-a97d-23bf31143601
+
+	annotation PBI_ResultType = Text
+
+expression pAdoQueryId = null meta [IsParameterQuery=true, Type="Any", IsParameterQueryRequired=false]
+	lineageTag: e66f71a8-0256-4682-8dee-4bf344c47e1c
+
+	annotation PBI_ResultType = Null
+
+expression pODataUrl = null meta [IsParameterQuery=true, Type="Any", IsParameterQueryRequired=false]
+	lineageTag: d79a076e-ae65-4f83-88a7-a0554c891d0d
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Null
+
+expression FunctionsAzureDevOps =
+		/*
+		Functions Azure DevOps locales para eliminar dependencia externa.
+		Incluye implementación de WiqlRunFlatWorkItemQueryById usando VSTS.AccountContents.
+		*/
+		let
+		    FnContents = (adoUrl as text) as function => (o as record) => VSTS.AccountContents(adoUrl, o),
+		
+		    FnHttpErrorMessage = (status as nullable number, body as any) as text =>
+		        let
+		            bodyText = try Text.FromBinary(body) otherwise "",
+		            msg = if status = null then "Error HTTP desconocido"
+		                  else "Error HTTP " & Text.From(status) & " al ejecutar query WIQL por ID."
+		        in msg & (if bodyText <> "" then " Detalle: " & bodyText else ""),
+		
+		    FnWiqlRunFlatWorkItemQueryById = (
+		        contents as function,
+		        adoUrl as text,
+		        scope as record,
+		        queryId as text
+		    ) as table =>
+		        let
+		            collection = try Text.From(scope[Collection]) otherwise "",
+		            project = try Text.From(scope[Project]) otherwise "",
+		            team = try Text.From(scope[Team]) otherwise "",
+		            relPath = Text.Combine(
+		                List.Select({collection, project, team, "_apis", "wit", "wiql", queryId}, each _ <> null and _ <> ""),
+		                "/"
+		            ),
+		            wiqlResponse = contents([
+		                RelativePath = relPath,
+		                Query = [#"api-version" = "7.0"],
+		                ManualStatusHandling = {400,401,403,404,429,500}
+		            ]),
+		            wiqlMeta = Value.Metadata(wiqlResponse),
+		            wiqlStatus = try wiqlMeta[Response.Status] otherwise 200,
+		            wiqlChecked = if wiqlStatus >= 400 then error Error.Record("WiqlRunFlatWorkItemQueryById", FnHttpErrorMessage(wiqlStatus, wiqlResponse), [Status=wiqlStatus, RelativePath=relPath]) else wiqlResponse,
+		            wiqlJson = Json.Document(wiqlChecked),
+		            workItems = try wiqlJson[workItems] otherwise {},
+		            ids = List.Transform(workItems, each try Text.From(_[id]) otherwise null),
+		            idsClean = List.Select(ids, each _ <> null),
+		            idsCsv = Text.Combine(idsClean, ","),
+		            empty = #table({}, {}),
+		            result = if List.Count(idsClean) = 0 then empty else
+		                let
+		                    itemsPath = Text.Combine(List.Select({collection, project, "_apis", "wit", "workitems"}, each _ <> null and _ <> ""), "/"),
+		                    itemsResp = contents([
+		                        RelativePath = itemsPath,
+		                        Query = [ids = idsCsv, #"api-version" = "7.0", #"$expand" = "Relations"],
+		                        ManualStatusHandling = {400,401,403,404,429,500}
+		                    ]),
+		                    itemsMeta = Value.Metadata(itemsResp),
+		                    itemsStatus = try itemsMeta[Response.Status] otherwise 200,
+		                    itemsChecked = if itemsStatus >= 400 then error Error.Record("WiqlRunFlatWorkItemQueryById", FnHttpErrorMessage(itemsStatus, itemsResp), [Status=itemsStatus, RelativePath=itemsPath]) else itemsResp,
+		                    itemsJson = Json.Document(itemsChecked),
+		                    values = try itemsJson[value] otherwise {},
+		                    baseRows = List.Transform(values, each [
+		                        ID = try _[id] otherwise null,
+		                        Title = try _[fields][#"System.Title"] otherwise null,
+		                        #"Work Item Type" = try _[fields][#"System.WorkItemType"] otherwise null,
+		                        State = try _[fields][#"System.State"] otherwise null,
+		                        #"Assigned To" = try _[fields][#"System.AssignedTo"][displayName] & " <" & _[fields][#"System.AssignedTo"][uniqueName] & ">" otherwise null,
+		                        Tags = try _[fields][#"System.Tags"] otherwise null,
+		                        Parent = try _[fields][#"System.Parent"] otherwise null,
+		                        #"Area Path" = try _[fields][#"System.AreaPath"] otherwise null,
+		                        #"Iteration Path" = try _[fields][#"System.IterationPath"] otherwise null,
+		                        #"Created Date" = try _[fields][#"System.CreatedDate"] otherwise null,
+		                        #"Changed Date" = try _[fields][#"System.ChangedDate"] otherwise null,
+		                        #"Closed Date" = try _[fields][#"Microsoft.VSTS.Common.ClosedDate"] otherwise null,
+		                        Priority = try _[fields][#"Microsoft.VSTS.Common.Priority"] otherwise null,
+		                        #"Board Column" = try _[fields][#"System.BoardColumn"] otherwise null,
+		                        #"Board Column Done" = try _[fields][#"System.BoardColumnDone"] otherwise null
+		                    ]),
+		                    tbl = Table.FromRecords(baseRows)
+		                in tbl
+		        in
+		            result,
+		
+		    FnCoalesceColumn = (tbl as table, candidates as list, target as text) as table =>
+		        let
+		            exists = List.Select(candidates, each Table.HasColumns(tbl, {_})),
+		            out = if List.Count(exists) = 0 then Table.AddColumn(tbl, target, each null)
+		                  else if List.First(exists) = target then tbl
+		                  else Table.RenameColumns(tbl, {{List.First(exists), target}}, MissingField.Ignore)
+		        in
+		            out,
+		
+		    FnEnsureColumns = (tbl as table, cols as list) as table =>
+		        List.Accumulate(cols, tbl, (state, c) => if Table.HasColumns(state, {c}) then state else Table.AddColumn(state, c, each null)),
+		
+		    FnParseAssignedTo = (assigned as nullable text) as record =>
+		        let
+		            a = if assigned = null then "" else Text.Trim(assigned),
+		            name = if a = "" then null else if Text.Contains(a, "<") then Text.Trim(Text.BeforeDelimiter(a, "<")) else a,
+		            email = if a = "" then null else if Text.Contains(a, "<") and Text.Contains(a, ">") then Text.Lower(Text.Trim(Text.BetweenDelimiters(a, "<", ">"))) else null
+		        in [AssignedToName = name, AssignedToEmail = email],
+		
+		    FnTrackFromText = (txt as nullable text) as record =>
+		        let
+		            t = if txt = null then "" else Text.Trim(txt),
+		            has = Text.StartsWith(t, "T") and Text.Length(t) >= 4 and Text.Range(t, 1, 2) >= "00" and Text.Range(t, 1, 2) <= "99" and Text.Contains(t, " - "),
+		            code = if has then Text.Start(t, 3) else null,
+		            name = if has then Text.AfterDelimiter(t, " - ") else null
+		        in [TrackCode = code, TrackName = name]
+		in
+		    [
+		        FnContents = FnContents,
+		        FnWiqlRunFlatWorkItemQueryById = FnWiqlRunFlatWorkItemQueryById,
+		        FnCoalesceColumn = FnCoalesceColumn,
+		        FnEnsureColumns = FnEnsureColumns,
+		        FnParseAssignedTo = FnParseAssignedTo,
+		        FnTrackFromText = FnTrackFromText
+		    ]
+	lineageTag: 6b1a6863-fd63-4617-b42c-4d794ab7f601
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Record
+
+expression transform_workitems_csv =
+		let
+		    Source = Csv.Document(File.Contents(pCsvPath), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+		    H = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+		    C = Table.TransformColumnNames(H, each Text.Trim(_)),
+		    I = Table.AddIndexColumn(C, "SortOrder", 1, 1, Int64.Type),
+		    T = Table.TransformColumnTypes(I,{{"ID", Int64.Type},{"Work Item Type", type text},{"Title 1", type text},{"Title 2", type text},{"Title 3", type text},{"Assigned To", type text},{"State", type text},{"Tags", type text}}),
+		
+		    A1 = Table.AddColumn(T,"WorkItemId", each [ID]),
+		    A2 = Table.AddColumn(A1,"WorkItemType", each Text.Proper(Text.Trim(Text.From([Work Item Type])))),
+		    F0 = Table.AddColumn(A2,"IsFeature", each [WorkItemType]="Feature", type logical),
+		    F1 = Table.AddColumn(F0,"IsUserStory", each [WorkItemType]="User Story", type logical),
+		    F2 = Table.AddColumn(F1,"IsTask", each [WorkItemType]="Task", type logical),
+		
+		    // Segmentación por Feature para herencia controlada dentro de cada track
+		    G0 = Table.AddColumn(F2, "FeatureSegment", each if [IsFeature] then 1 else 0, Int64.Type),
+		    G1 = Table.AddColumn(G0, "FeatureGroup", each List.Sum(List.FirstN(G0[FeatureSegment], [SortOrder])), Int64.Type),
+		
+		    B1 = Table.AddColumn(G1,"FeatureTitleSeed", each if [IsFeature] then [Title 1] else null, type text),
+		    B2 = Table.FillDown(B1,{"FeatureTitleSeed"}),
+		    B3 = Table.AddColumn(B2,"FeatureTitle", each [FeatureTitleSeed], type text),
+		
+		    B4 = Table.AddColumn(B3,"FeatureWorkItemIdSeed", each if [IsFeature] then [WorkItemId] else null, Int64.Type),
+		    B5 = Table.FillDown(B4,{"FeatureWorkItemIdSeed"}),
+		    B6 = Table.AddColumn(B5,"FeatureWorkItemId", each if [FeatureGroup] > 0 and ([IsFeature] or [IsUserStory] or [IsTask]) then [FeatureWorkItemIdSeed] else null, Int64.Type),
+		
+		    // User Story heredada solo dentro del mismo FeatureGroup
+		    U0 = Table.AddColumn(B6,"UserStoryWorkItemIdSeed", each if [IsUserStory] then [WorkItemId] else null, Int64.Type),
+		    U1 = Table.Group(U0, {"FeatureGroup"}, {{"Rows", (tt) => Table.FillDown(tt,{"UserStoryWorkItemIdSeed"}), type table}}),
+		    U2 = Table.Combine(U1[Rows]),
+		    U3 = Table.Sort(U2,{{"SortOrder", Order.Ascending}}),
+		    U4 = Table.AddColumn(U3,"UserStoryWorkItemId", each if [IsUserStory] or [IsTask] then [UserStoryWorkItemIdSeed] else null, Int64.Type),
+		
+		    U5 = Table.AddColumn(U4,"UserStoryTitleSeed", each if [IsUserStory] then [Title 2] else null, type text),
+		    U6 = Table.Group(U5, {"FeatureGroup"}, {{"Rows", (tt) => Table.FillDown(tt,{"UserStoryTitleSeed"}), type table}}),
+		    U7 = Table.Combine(U6[Rows]),
+		    U8 = Table.Sort(U7,{{"SortOrder", Order.Ascending}}),
+		    U9 = Table.AddColumn(U8,"UserStoryTitle", each if [IsUserStory] or [IsTask] then [UserStoryTitleSeed] else null, type text),
+		
+		    T1 = Table.AddColumn(U9,"TaskTitle", each if [IsTask] then [Title 3] else null, type text),
+		    T2 = Table.AddColumn(T1,"DisplayTitle", each if [IsFeature] then [FeatureTitle] else if [IsUserStory] then [UserStoryTitle] else [TaskTitle]),
+		
+		    R1 = Table.AddColumn(T2,"TrackRec", each FunctionsAzureDevOps[FnTrackFromText]([FeatureTitle])),
+		    R2 = Table.ExpandRecordColumn(R1,"TrackRec",{"TrackCode","TrackName"},{"TrackCode","TrackName"}),
+		
+		    E1 = Table.AddColumn(R2,"AssignedRec", each FunctionsAzureDevOps[FnParseAssignedTo]([Assigned To])),
+		    E2 = Table.ExpandRecordColumn(E1,"AssignedRec",{"AssignedToName","AssignedToEmail"},{"AssignedToName","AssignedToEmail"}),
+		    E3 = Table.TransformColumns(E2,{{"State", each if _=null then null else Text.Proper(Text.Trim(Text.From(_))), type text}}),
+		    E4 = Table.AddColumn(E3,"StateNormalized", each if [State]="New" then "Pendiente" else if List.Contains({"Active","In Progress","Resolved"}, [State]) then "En curso" else if List.Contains({"Closed","Done"}, [State]) then "Cerrado" else "Otro"),
+		    E5 = Table.AddColumn(E4,"HasOwner", each [AssignedToName]<>null and Text.Trim([AssignedToName])<>"", type logical),
+		    E6 = Table.AddColumn(E5,"ProgressWeight", each if [StateNormalized]="Cerrado" then 1 else if [StateNormalized]="En curso" then 0.5 else 0, type number),
+		    E7 = Table.AddColumn(E6,"SourceMode", each "CSV", type text),
+		    E8 = Table.AddColumn(E7,"ParentWorkItemId", each null, Int64.Type),
+		    E9 = Table.AddColumn(E8,"AreaPath", each null, type text),
+		    E10 = Table.AddColumn(E9,"IterationPath", each null, type text),
+		    E11 = Table.AddColumn(E10,"CreatedDate", each null, type datetime),
+		    E12 = Table.AddColumn(E11,"ChangedDate", each null, type datetime),
+		    E13 = Table.AddColumn(E12,"ClosedDate", each null, type datetime),
+		    E14 = Table.AddColumn(E13,"Priority", each null, Int64.Type),
+		    E15 = Table.AddColumn(E14,"BoardColumn", each null, type text),
+		    E16 = Table.AddColumn(E15,"BoardColumnDone", each null, type logical),
+		    E17 = Table.AddColumn(E16,"HierarchyLevel", each if [IsFeature] then 1 else if [IsUserStory] then 2 else if [IsTask] then 3 else null, Int64.Type),
+		    E18 = Table.AddColumn(E17,"HierarchyStatus", each if [TrackCode]=null then "Track no detectado" else if [IsTask] and [UserStoryWorkItemId]=null then "Jerarquía incompleta" else "Completa", type text),
+		    E19 = Table.ReplaceValue(E18,null,"Track sin clasificar",Replacer.ReplaceValue,{"TrackName"}),
+		    E20 = Table.ReplaceValue(E19,null,"T00",Replacer.ReplaceValue,{"TrackCode"}),
+		
+		    S = Table.SelectColumns(E20,{"WorkItemId","WorkItemType","TrackCode","TrackName","FeatureWorkItemId","FeatureTitle","UserStoryWorkItemId","UserStoryTitle","TaskTitle","DisplayTitle","AssignedToName","AssignedToEmail","State","StateNormalized","Tags","HasOwner","IsFeature","IsUserStory","IsTask","SortOrder","ProgressWeight","SourceMode","ParentWorkItemId","AreaPath","IterationPath","CreatedDate","ChangedDate","ClosedDate","Priority","BoardColumn","BoardColumnDone","HierarchyLevel","HierarchyStatus"})
+		in
+		    S
+	lineageTag: df43366b-8f44-437d-b064-efb539a090f6
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+
+expression transform_workitems_wiql =
+		let
+		    // Patrón técnico requerido: VSTS.AccountContents + FunctionsAzureDevOps[FnWiqlRunFlatWorkItemQueryById]
+		    contents = (o as record) => VSTS.AccountContents(pAdoUrl, o),
+		    RawWiql = FunctionsAzureDevOps[FnWiqlRunFlatWorkItemQueryById](
+		        contents,
+		        pAdoUrl,
+		        [Collection = pAdoCollection, Project = pAdoProject, Team = pAdoTeam],
+		        pAdoQueryId
+		    ),
+		
+		    // Normalización de nombres de columnas de entrada (soporta variantes de WIQL)
+		    T0 = FunctionsAzureDevOps[FnCoalesceColumn](RawWiql,{"ID","Id","WorkItemId"},"WorkItemId"),
+		    T1 = FunctionsAzureDevOps[FnCoalesceColumn](T0,{"Work Item Type","WorkItemType","Type"},"WorkItemType"),
+		    T2 = FunctionsAzureDevOps[FnCoalesceColumn](T1,{"Title","System.Title","Title 1"},"Title"),
+		    T3 = FunctionsAzureDevOps[FnCoalesceColumn](T2,{"Title 1","FeatureTitle"},"Title 1"),
+		    T4 = FunctionsAzureDevOps[FnCoalesceColumn](T3,{"Title 2","UserStoryTitle"},"Title 2"),
+		    T5 = FunctionsAzureDevOps[FnCoalesceColumn](T4,{"Title 3","TaskTitle"},"Title 3"),
+		    T6 = FunctionsAzureDevOps[FnCoalesceColumn](T5,{"Assigned To","AssignedTo"},"Assigned To"),
+		    T7 = FunctionsAzureDevOps[FnCoalesceColumn](T6,{"State","System.State"},"State"),
+		    T8 = FunctionsAzureDevOps[FnCoalesceColumn](T7,{"Tags","System.Tags"},"Tags"),
+		    T9 = FunctionsAzureDevOps[FnCoalesceColumn](T8,{"Parent","ParentWorkItemId"},"ParentWorkItemId"),
+		    T10 = FunctionsAzureDevOps[FnCoalesceColumn](T9,{"Area Path","AreaPath"},"AreaPath"),
+		    T11 = FunctionsAzureDevOps[FnCoalesceColumn](T10,{"Iteration Path","IterationPath"},"IterationPath"),
+		    T12 = FunctionsAzureDevOps[FnCoalesceColumn](T11,{"Created Date","CreatedDate"},"CreatedDate"),
+		    T13 = FunctionsAzureDevOps[FnCoalesceColumn](T12,{"Changed Date","ChangedDate"},"ChangedDate"),
+		    T14 = FunctionsAzureDevOps[FnCoalesceColumn](T13,{"Closed Date","ClosedDate"},"ClosedDate"),
+		    T15 = FunctionsAzureDevOps[FnCoalesceColumn](T14,{"Priority"},"Priority"),
+		    T16 = FunctionsAzureDevOps[FnCoalesceColumn](T15,{"Board Column","BoardColumn"},"BoardColumn"),
+		    T17 = FunctionsAzureDevOps[FnCoalesceColumn](T16,{"Board Column Done","BoardColumnDone"},"BoardColumnDone"),
+		
+		    Typed = Table.TransformColumnTypes(T17,{{"WorkItemId", Int64.Type},{"ParentWorkItemId", Int64.Type}}),
+		    I = Table.AddIndexColumn(Typed,"SortOrder",1,1,Int64.Type),
+		
+		    A = Table.AddColumn(I,"AssignedRec", each FunctionsAzureDevOps[FnParseAssignedTo](try Text.From([Assigned To]) otherwise null)),
+		    E = Table.ExpandRecordColumn(A,"AssignedRec",{"AssignedToName","AssignedToEmail"},{"AssignedToName","AssignedToEmail"}),
+		    N0 = Table.TransformColumns(E,{{"WorkItemType", each Text.Proper(Text.Trim(Text.From(_))), type text},{"State", each if _=null then null else Text.Proper(Text.Trim(Text.From(_))), type text}}),
+		    N0b = Table.AddColumn(N0,"FeatureTitleSeed", each if [WorkItemType]="Feature" and [Title 1]<>null then [Title 1] else if [WorkItemType]="Feature" then [Title] else null, type text),
+		    N0c = Table.FillDown(N0b,{"FeatureTitleSeed"}),
+		    N1 = Table.AddColumn(N0c,"FeatureTitleRaw", each [FeatureTitleSeed]),
+		    N2 = Table.AddColumn(N1,"UserStoryTitleRaw", each if [Title 2]<>null then [Title 2] else if [WorkItemType]="User Story" then [Title] else null),
+		    N3 = Table.AddColumn(N2,"TaskTitleRaw", each if [Title 3]<>null then [Title 3] else if [WorkItemType]="Task" then [Title] else null),
+		    N4 = N3,
+		
+		    // Lookup de padres para reconstrucción jerárquica si la query viene flat con Parent
+		    ParentLookup = Table.SelectColumns(N4,{"WorkItemId","WorkItemType","Title","ParentWorkItemId","FeatureTitleRaw"}),
+		    JoinP1 = Table.NestedJoin(N4,{"ParentWorkItemId"},ParentLookup,{"WorkItemId"},"P1",JoinKind.LeftOuter),
+		    ExpP1 = Table.ExpandTableColumn(JoinP1,"P1",{"WorkItemId","WorkItemType","Title","ParentWorkItemId","FeatureTitleRaw"},{"P1_WorkItemId","P1_WorkItemType","P1_Title","P1_ParentWorkItemId","P1_FeatureTitleRaw"}),
+		    JoinP2 = Table.NestedJoin(ExpP1,{"P1_ParentWorkItemId"},ParentLookup,{"WorkItemId"},"P2",JoinKind.LeftOuter),
+		    ExpP2 = Table.ExpandTableColumn(JoinP2,"P2",{"WorkItemId","WorkItemType","Title","FeatureTitleRaw"},{"P2_WorkItemId","P2_WorkItemType","P2_Title","P2_FeatureTitleRaw"}),
+		
+		    // IDs jerárquicos por tipo
+		    H1 = Table.AddColumn(ExpP2,"FeatureWorkItemId", each if [WorkItemType]="Feature" then [WorkItemId] else if [WorkItemType]="User Story" and [P1_WorkItemType]="Feature" then [P1_WorkItemId] else if [WorkItemType]="Task" and [P1_WorkItemType]="Feature" then [P1_WorkItemId] else if [WorkItemType]="Task" and [P2_WorkItemType]="Feature" then [P2_WorkItemId] else null, Int64.Type),
+		    H2 = Table.AddColumn(H1,"UserStoryWorkItemId", each if [WorkItemType]="User Story" then [WorkItemId] else if [WorkItemType]="Task" and [P1_WorkItemType]="User Story" then [P1_WorkItemId] else null, Int64.Type),
+		
+		    // Títulos finales (prioriza salida tree Title1/2/3; fallback a parent)
+		    H3 = Table.AddColumn(H2,"FeatureTitle", each if [FeatureTitleRaw]<>null then [FeatureTitleRaw] else if [P1_WorkItemType]="Feature" then [P1_Title] else if [P2_WorkItemType]="Feature" then [P2_Title] else null),
+		    H4 = Table.AddColumn(H3,"UserStoryTitle", each if [UserStoryTitleRaw]<>null then [UserStoryTitleRaw] else if [WorkItemType]="User Story" then [Title] else if [P1_WorkItemType]="User Story" then [P1_Title] else null),
+		    H5 = Table.AddColumn(H4,"TaskTitle", each if [TaskTitleRaw]<>null then [TaskTitleRaw] else if [WorkItemType]="Task" then [Title] else null),
+		
+		    D = Table.AddColumn(H5,"DisplayTitle", each if [WorkItemType]="Feature" then [FeatureTitle] else if [WorkItemType]="User Story" then [UserStoryTitle] else [TaskTitle]),
+		    TRec = Table.AddColumn(D,"TrackRec", each FunctionsAzureDevOps[FnTrackFromText]([FeatureTitle])),
+		    TExp = Table.ExpandRecordColumn(TRec,"TrackRec",{"TrackCode","TrackName"},{"TrackCode","TrackName"}),
+		
+		    SNorm = Table.AddColumn(TExp,"StateNormalized", each if [State]="New" then "Pendiente" else if List.Contains({"Active","In Progress","Resolved"}, [State]) then "En curso" else if List.Contains({"Closed","Done"}, [State]) then "Cerrado" else "Otro"),
+		    F0 = Table.AddColumn(SNorm,"HasOwner", each [AssignedToName]<>null and Text.Trim([AssignedToName])<>"", type logical),
+		    F1 = Table.AddColumn(F0,"IsFeature", each [WorkItemType]="Feature", type logical),
+		    F2 = Table.AddColumn(F1,"IsUserStory", each [WorkItemType]="User Story", type logical),
+		    F3 = Table.AddColumn(F2,"IsTask", each [WorkItemType]="Task", type logical),
+		    F4 = Table.AddColumn(F3,"ProgressWeight", each if [StateNormalized]="Cerrado" then 1 else if [StateNormalized]="En curso" then 0.5 else 0, type number),
+		    F5 = Table.AddColumn(F4,"SourceMode", each "WIQL", type text),
+		    F6 = Table.AddColumn(F5,"HierarchyLevel", each if [IsFeature] then 1 else if [IsUserStory] then 2 else if [IsTask] then 3 else null, Int64.Type),
+		    F7 = Table.AddColumn(F6,"HierarchyStatus", each if [IsFeature] and [TrackCode]=null then "Track no detectado" else if [IsUserStory] and [FeatureWorkItemId]=null then "User Story sin Feature" else if [IsTask] and [ParentWorkItemId]=null then "Sin parent" else if [IsTask] and [UserStoryWorkItemId]=null then "Jerarquía incompleta" else "Completa", type text),
+		    F8 = Table.ReplaceValue(F7,null,"Track sin clasificar",Replacer.ReplaceValue,{"TrackName"}),
+		    F9 = Table.ReplaceValue(F8,null,"T00",Replacer.ReplaceValue,{"TrackCode"}),
+		    ECols = FunctionsAzureDevOps[FnEnsureColumns](F9,{"BoardColumnDone","AreaPath","IterationPath","CreatedDate","ChangedDate","ClosedDate","Priority","ParentWorkItemId"}),
+		
+		    S = Table.SelectColumns(ECols,{"WorkItemId","WorkItemType","TrackCode","TrackName","FeatureWorkItemId","FeatureTitle","UserStoryWorkItemId","UserStoryTitle","TaskTitle","DisplayTitle","AssignedToName","AssignedToEmail","State","StateNormalized","Tags","HasOwner","IsFeature","IsUserStory","IsTask","SortOrder","ProgressWeight","SourceMode","ParentWorkItemId","AreaPath","IterationPath","CreatedDate","ChangedDate","ClosedDate","Priority","BoardColumn","BoardColumnDone","HierarchyLevel","HierarchyStatus"})
+		in
+		    S
+	lineageTag: dddb19b2-40b4-415b-9c84-804eb336dd48
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Exception
+
+expression transform_workitems_odata =
+		let
+		    Raw = OData.Feed(pODataUrl, null, [Implementation="2.0"]),
+		    T0 = FunctionsAzureDevOps[FnCoalesceColumn](Raw,{"WorkItemId","ID","Id"},"WorkItemId"),
+		    T1 = FunctionsAzureDevOps[FnCoalesceColumn](T0,{"WorkItemType","Work Item Type"},"WorkItemType"),
+		    T2 = FunctionsAzureDevOps[FnCoalesceColumn](T1,{"Title"},"Title"),
+		    T3 = FunctionsAzureDevOps[FnCoalesceColumn](T2,{"AssignedTo"},"Assigned To"),
+		    T4 = FunctionsAzureDevOps[FnCoalesceColumn](T3,{"State"},"State"),
+		    T5 = FunctionsAzureDevOps[FnCoalesceColumn](T4,{"Tags"},"Tags"),
+		    I = Table.AddIndexColumn(T5,"SortOrder",1,1,Int64.Type),
+		    A = Table.AddColumn(I,"AssignedRec", each FunctionsAzureDevOps[FnParseAssignedTo](try Text.From([Assigned To]) otherwise null)),
+		    E = Table.ExpandRecordColumn(A,"AssignedRec",{"AssignedToName","AssignedToEmail"},{"AssignedToName","AssignedToEmail"}),
+		    N = Table.AddColumn(E,"TrackRec", each FunctionsAzureDevOps[FnTrackFromText]([Title])),
+		    X = Table.ExpandRecordColumn(N,"TrackRec",{"TrackCode","TrackName"},{"TrackCode","TrackName"}),
+		    W = Table.AddColumn(X,"WorkItemTypeN", each Text.Proper(Text.Trim(Text.From([WorkItemType])))),
+		    R = Table.RenameColumns(W,{{"WorkItemTypeN","WorkItemType"}},MissingField.Ignore),
+		    S0 = Table.AddColumn(R,"FeatureTitle", each if [WorkItemType]="Feature" then [Title] else null),
+		    S1 = Table.AddColumn(S0,"UserStoryTitle", each if [WorkItemType]="User Story" then [Title] else null),
+		    S2 = Table.AddColumn(S1,"TaskTitle", each if [WorkItemType]="Task" then [Title] else null),
+		    S3 = Table.AddColumn(S2,"DisplayTitle", each [Title]),
+		    S4 = Table.AddColumn(S3,"StateNormalized", each if [State]="New" then "Pendiente" else if List.Contains({"Active","In Progress","Resolved"}, [State]) then "En curso" else if List.Contains({"Closed","Done"}, [State]) then "Cerrado" else "Otro"),
+		    S5 = Table.AddColumn(S4,"HasOwner", each [AssignedToName]<>null and Text.Trim([AssignedToName])<>"", type logical),
+		    S6 = Table.AddColumn(S5,"IsFeature", each [WorkItemType]="Feature", type logical),
+		    S7 = Table.AddColumn(S6,"IsUserStory", each [WorkItemType]="User Story", type logical),
+		    S8 = Table.AddColumn(S7,"IsTask", each [WorkItemType]="Task", type logical),
+		    S9 = Table.AddColumn(S8,"ProgressWeight", each if [StateNormalized]="Cerrado" then 1 else if [StateNormalized]="En curso" then 0.5 else 0, type number),
+		    S10 = Table.AddColumn(S9,"SourceMode", each "OData", type text),
+		    ECols = FunctionsAzureDevOps[FnEnsureColumns](S10,{"FeatureWorkItemId","UserStoryWorkItemId","ParentWorkItemId","AreaPath","IterationPath","CreatedDate","ChangedDate","ClosedDate","Priority","BoardColumn","BoardColumnDone","HierarchyLevel","HierarchyStatus"}),
+		    S = Table.SelectColumns(ECols,{"WorkItemId","WorkItemType","TrackCode","TrackName","FeatureWorkItemId","FeatureTitle","UserStoryWorkItemId","UserStoryTitle","TaskTitle","DisplayTitle","AssignedToName","AssignedToEmail","State","StateNormalized","Tags","HasOwner","IsFeature","IsUserStory","IsTask","SortOrder","ProgressWeight","SourceMode","ParentWorkItemId","AreaPath","IterationPath","CreatedDate","ChangedDate","ClosedDate","Priority","BoardColumn","BoardColumnDone","HierarchyLevel","HierarchyStatus"})
+		in
+		    S
+	lineageTag: 6b68ce27-34eb-4157-8a65-59fe784e7ee3
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Exception
+

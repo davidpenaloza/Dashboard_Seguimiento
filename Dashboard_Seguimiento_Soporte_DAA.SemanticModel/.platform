@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Dashboard_Seguimiento_Soporte_DAA"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "7be86da3-1100-4780-a75d-5fe3409f9845"
+  }
+}
