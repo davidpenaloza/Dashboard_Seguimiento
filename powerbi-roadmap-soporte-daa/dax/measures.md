@@ -1,0 +1,22 @@
+# Medidas DAX (Fact_WorkItems)
+```DAX
+Total Work Items = COUNTROWS(Fact_WorkItems)
+Total Tracks = DISTINCTCOUNT(Fact_WorkItems[TrackCode])
+Total User Stories = CALCULATE(COUNTROWS(Fact_WorkItems), Fact_WorkItems[IsUserStory] = TRUE())
+Total Tasks = CALCULATE(COUNTROWS(Fact_WorkItems), Fact_WorkItems[IsTask] = TRUE())
+Tasks Pendientes = CALCULATE([Total Tasks], Fact_WorkItems[StateNormalized] = "Pendiente")
+Tasks En Curso = CALCULATE([Total Tasks], Fact_WorkItems[StateNormalized] = "En curso")
+Tasks Cerradas = CALCULATE([Total Tasks], Fact_WorkItems[StateNormalized] = "Cerrado")
+Tasks Sin Responsable = CALCULATE([Total Tasks], Fact_WorkItems[HasOwner] = FALSE())
+% Tasks Sin Responsable = DIVIDE([Tasks Sin Responsable], [Total Tasks])
+Avance Global % = DIVIDE([Tasks Cerradas], [Total Tasks])
+Avance Track % = [Avance Global %]
+Avance Ponderado % = DIVIDE(SUMX(FILTER(Fact_WorkItems, Fact_WorkItems[IsTask] = TRUE()), Fact_WorkItems[ProgressWeight]), [Total Tasks])
+Estado Ejecutivo = SWITCH(TRUE(), [Avance Ponderado %] = 0, "No iniciado", [Avance Ponderado %] < 1, "En curso", [Avance Ponderado %] = 1, "Cerrado", "Sin información")
+Color Estado = SWITCH([Estado Ejecutivo], "Cerrado", "#2E7D32", "En curso", "#F9A825", "No iniciado", "#9E9E9E", "#BDBDBD")
+Work Items con jerarquía incompleta = CALCULATE(COUNTROWS(Fact_WorkItems), Fact_WorkItems[HierarchyStatus] <> "Completa")
+% Work Items con jerarquía incompleta = DIVIDE([Work Items con jerarquía incompleta], [Total Work Items])
+Tracks sin clasificar = CALCULATE(DISTINCTCOUNT(Fact_WorkItems[WorkItemId]), Fact_WorkItems[TrackCode] = "T00")
+Tasks sin Parent = CALCULATE([Total Tasks], ISBLANK(Fact_WorkItems[ParentWorkItemId]))
+User Stories sin Feature = CALCULATE([Total User Stories], ISBLANK(Fact_WorkItems[FeatureWorkItemId]))
+```
