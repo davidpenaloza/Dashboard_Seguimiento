@@ -33,10 +33,13 @@ let
 
     A = Table.AddColumn(I,"AssignedRec", each FunctionsAzureDevOps[FnParseAssignedTo](try Text.From([Assigned To]) otherwise null)),
     E = Table.ExpandRecordColumn(A,"AssignedRec",{"AssignedToName","AssignedToEmail"},{"AssignedToName","AssignedToEmail"}),
-    N1 = Table.AddColumn(E,"FeatureTitleRaw", each if [Title 1]<>null then [Title 1] else if Text.Proper(Text.From([WorkItemType]))="Feature" then [Title] else null),
-    N2 = Table.AddColumn(N1,"UserStoryTitleRaw", each if [Title 2]<>null then [Title 2] else if Text.Proper(Text.From([WorkItemType]))="User Story" then [Title] else null),
-    N3 = Table.AddColumn(N2,"TaskTitleRaw", each if [Title 3]<>null then [Title 3] else if Text.Proper(Text.From([WorkItemType]))="Task" then [Title] else null),
-    N4 = Table.TransformColumns(N3,{{"WorkItemType", each Text.Proper(Text.Trim(Text.From(_))), type text},{"State", each if _=null then null else Text.Proper(Text.Trim(Text.From(_))), type text}}),
+    N0 = Table.TransformColumns(E,{{"WorkItemType", each Text.Proper(Text.Trim(Text.From(_))), type text},{"State", each if _=null then null else Text.Proper(Text.Trim(Text.From(_))), type text}}),
+    N0b = Table.AddColumn(N0,"FeatureTitleSeed", each if [WorkItemType]="Feature" and [Title 1]<>null then [Title 1] else if [WorkItemType]="Feature" then [Title] else null, type text),
+    N0c = Table.FillDown(N0b,{"FeatureTitleSeed"}),
+    N1 = Table.AddColumn(N0c,"FeatureTitleRaw", each [FeatureTitleSeed]),
+    N2 = Table.AddColumn(N1,"UserStoryTitleRaw", each if [Title 2]<>null then [Title 2] else if [WorkItemType]="User Story" then [Title] else null),
+    N3 = Table.AddColumn(N2,"TaskTitleRaw", each if [Title 3]<>null then [Title 3] else if [WorkItemType]="Task" then [Title] else null),
+    N4 = N3,
 
     // Lookup de padres para reconstrucción jerárquica si la query viene flat con Parent
     ParentLookup = Table.SelectColumns(N4,{"WorkItemId","WorkItemType","Title","ParentWorkItemId","FeatureTitleRaw"}),

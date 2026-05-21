@@ -72,3 +72,11 @@ Ambos modos proyectan exactamente estas columnas:
 
 ## 9) Seguridad
 - No se incluyen credenciales, PAT, tokens ni secretos en código o documentación.
+
+## 10) Validación específica modo CSV (herencia de Track)
+- En `transform_workitems_csv.pq` se implementó herencia jerárquica por `FillDown` para:
+  - `FeatureTitle` desde filas Feature.
+  - `FeatureWorkItemId` hacia User Stories y Tasks hijas.
+  - `UserStoryWorkItemId` y `UserStoryTitle` hacia Tasks hijas.
+- `TrackCode` y `TrackName` ahora se calculan desde `FeatureTitle` heredado, por lo que filas hijas con padre válido **no** deben quedar en `T00`.
+- `T00 / Track sin clasificar` queda reservado para registros realmente sin Feature padre detectable.
