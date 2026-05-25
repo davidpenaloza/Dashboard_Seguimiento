@@ -1,0 +1,94 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "cd_kpis",
+  "position": {
+    "x": 20,
+    "y": 10,
+    "z": 1,
+    "height": 90,
+    "width": 1240,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Work Items con jerarquía incompleta"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Work Items con jerarquía incompleta",
+              "nativeQueryRef": "Work Items con jerarquía incompleta"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Tracks sin clasificar"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Tracks sin clasificar",
+              "nativeQueryRef": "Tracks sin clasificar"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Tasks sin User Story"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Tasks sin User Story",
+              "nativeQueryRef": "Tasks sin User Story"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "User Stories sin Feature"
+                }
+              },
+              "queryRef": "Fact_WorkItems.User Stories sin Feature",
+              "nativeQueryRef": "User Stories sin Feature"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Tasks Sin Responsable"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Tasks Sin Responsable",
+              "nativeQueryRef": "Tasks Sin Responsable"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

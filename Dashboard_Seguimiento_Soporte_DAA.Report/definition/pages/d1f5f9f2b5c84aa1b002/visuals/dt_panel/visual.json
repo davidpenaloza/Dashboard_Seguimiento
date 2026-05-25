@@ -1,0 +1,108 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "dt_panel",
+  "position": {
+    "x": 860,
+    "y": 180,
+    "z": 1,
+    "height": 280,
+    "width": 400,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "TrackCode"
+                }
+              },
+              "queryRef": "Fact_WorkItems.TrackCode",
+              "nativeQueryRef": "TrackCode"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "TrackName"
+                }
+              },
+              "queryRef": "Fact_WorkItems.TrackName",
+              "nativeQueryRef": "TrackName"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Avance Ponderado %"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Avance Ponderado %",
+              "nativeQueryRef": "Avance Ponderado %"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Total Tasks"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Total Tasks",
+              "nativeQueryRef": "Total Tasks"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Tasks Sin Responsable"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Tasks Sin Responsable",
+              "nativeQueryRef": "Tasks Sin Responsable"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Work Items con jerarquía incompleta"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Work Items con jerarquía incompleta",
+              "nativeQueryRef": "Work Items con jerarquía incompleta"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

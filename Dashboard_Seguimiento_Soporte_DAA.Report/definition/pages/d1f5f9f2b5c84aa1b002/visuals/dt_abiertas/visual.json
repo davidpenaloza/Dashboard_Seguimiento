@@ -1,0 +1,80 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "dt_abiertas",
+  "position": {
+    "x": 20,
+    "y": 470,
+    "z": 1,
+    "height": 220,
+    "width": 620,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "DisplayTitle"
+                }
+              },
+              "queryRef": "Fact_WorkItems.DisplayTitle",
+              "nativeQueryRef": "DisplayTitle"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "StateNormalized"
+                }
+              },
+              "queryRef": "Fact_WorkItems.StateNormalized",
+              "nativeQueryRef": "StateNormalized"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "AssignedToName"
+                }
+              },
+              "queryRef": "Fact_WorkItems.AssignedToName",
+              "nativeQueryRef": "AssignedToName"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "HierarchyStatus"
+                }
+              },
+              "queryRef": "Fact_WorkItems.HierarchyStatus",
+              "nativeQueryRef": "HierarchyStatus"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
