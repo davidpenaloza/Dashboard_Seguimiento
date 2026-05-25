@@ -1,11 +1,11 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
-  "name": "so_bar_estado",
+  "name": "cd_state",
   "position": {
-    "x": 20,
-    "y": 490,
+    "x": 860,
+    "y": 110,
     "z": 1,
-    "height": 200,
+    "height": 220,
     "width": 400,
     "tabOrder": 1
   },
@@ -42,11 +42,11 @@
                       "Entity": "Fact_WorkItems"
                     }
                   },
-                  "Property": "Total Tasks"
+                  "Property": "Work Items con jerarquía incompleta"
                 }
               },
-              "queryRef": "Fact_WorkItems.Total Tasks",
-              "nativeQueryRef": "Total Tasks"
+              "queryRef": "Fact_WorkItems.Work Items con jerarquía incompleta",
+              "nativeQueryRef": "Work Items con jerarquía incompleta"
             }
           ]
         }

@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
   "name": "d1f5f9f2b5c84aa1b002",
-  "displayName": "Detalle por Track",
+  "displayName": "Detalle Dinámico por Track",
   "displayOption": "FitToPage",
   "height": 720,
   "width": 1280,

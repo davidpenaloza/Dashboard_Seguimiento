@@ -1,12 +1,12 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
-  "name": "so_bar_estado",
+  "name": "ce_bar_avance",
   "position": {
     "x": 20,
     "y": 490,
     "z": 1,
     "height": 200,
-    "width": 400,
+    "width": 620,
     "tabOrder": 1
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "Fact_WorkItems"
                     }
                   },
-                  "Property": "StateNormalized"
+                  "Property": "TrackName"
                 }
               },
-              "queryRef": "Fact_WorkItems.StateNormalized",
-              "nativeQueryRef": "StateNormalized",
+              "queryRef": "Fact_WorkItems.TrackName",
+              "nativeQueryRef": "TrackName",
               "active": true
             }
           ]
@@ -42,11 +42,11 @@
                       "Entity": "Fact_WorkItems"
                     }
                   },
-                  "Property": "Total Tasks"
+                  "Property": "Avance Ponderado %"
                 }
               },
-              "queryRef": "Fact_WorkItems.Total Tasks",
-              "nativeQueryRef": "Total Tasks"
+              "queryRef": "Fact_WorkItems.Avance Ponderado %",
+              "nativeQueryRef": "Avance Ponderado %"
             }
           ]
         }

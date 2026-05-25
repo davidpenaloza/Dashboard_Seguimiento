@@ -1,12 +1,12 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
-  "name": "so_bar_estado",
+  "name": "ce_bar_estado",
   "position": {
-    "x": 20,
+    "x": 660,
     "y": 490,
     "z": 1,
     "height": 200,
-    "width": 400,
+    "width": 600,
     "tabOrder": 1
   },
   "visual": {

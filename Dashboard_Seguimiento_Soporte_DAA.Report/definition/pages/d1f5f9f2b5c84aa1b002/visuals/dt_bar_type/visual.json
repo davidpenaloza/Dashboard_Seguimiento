@@ -1,12 +1,12 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
-  "name": "so_bar_estado",
+  "name": "dt_bar_type",
   "position": {
-    "x": 20,
-    "y": 490,
+    "x": 1070,
+    "y": 470,
     "z": 1,
-    "height": 200,
-    "width": 400,
+    "height": 220,
+    "width": 190,
     "tabOrder": 1
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "Fact_WorkItems"
                     }
                   },
-                  "Property": "StateNormalized"
+                  "Property": "WorkItemType"
                 }
               },
-              "queryRef": "Fact_WorkItems.StateNormalized",
-              "nativeQueryRef": "StateNormalized",
+              "queryRef": "Fact_WorkItems.WorkItemType",
+              "nativeQueryRef": "WorkItemType",
               "active": true
             }
           ]

@@ -1,16 +1,16 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
-  "name": "so_bar_owner",
+  "name": "so_s_owner",
   "position": {
-    "x": 440,
-    "y": 490,
+    "x": 950,
+    "y": 10,
     "z": 1,
-    "height": 200,
-    "width": 400,
+    "height": 60,
+    "width": 300,
     "tabOrder": 1
   },
   "visual": {
-    "visualType": "clusteredColumnChart",
+    "visualType": "slicer",
     "query": {
       "queryState": {
         "Category": {
@@ -27,26 +27,7 @@
                 }
               },
               "queryRef": "Fact_WorkItems.AssignedToName",
-              "nativeQueryRef": "AssignedToName",
-              "active": true
-            }
-          ]
-        },
-        "Y": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Fact_WorkItems"
-                    }
-                  },
-                  "Property": "Total Tasks"
-                }
-              },
-              "queryRef": "Fact_WorkItems.Total Tasks",
-              "nativeQueryRef": "Total Tasks"
+              "nativeQueryRef": "AssignedToName"
             }
           ]
         }

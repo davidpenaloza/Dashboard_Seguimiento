@@ -1,38 +1,19 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
-  "name": "so_bar_estado",
+  "name": "dt_header",
   "position": {
-    "x": 20,
-    "y": 490,
+    "x": 400,
+    "y": 10,
     "z": 1,
-    "height": 200,
-    "width": 400,
+    "height": 60,
+    "width": 860,
     "tabOrder": 1
   },
   "visual": {
-    "visualType": "clusteredColumnChart",
+    "visualType": "tableEx",
     "query": {
       "queryState": {
-        "Category": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Fact_WorkItems"
-                    }
-                  },
-                  "Property": "StateNormalized"
-                }
-              },
-              "queryRef": "Fact_WorkItems.StateNormalized",
-              "nativeQueryRef": "StateNormalized",
-              "active": true
-            }
-          ]
-        },
-        "Y": {
+        "Values": {
           "projections": [
             {
               "field": {
