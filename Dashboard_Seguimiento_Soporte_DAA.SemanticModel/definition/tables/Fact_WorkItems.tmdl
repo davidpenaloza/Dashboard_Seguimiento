@@ -152,6 +152,43 @@ table Fact_WorkItems
 			CALCULATE(DISTINCTCOUNT(Fact_WorkItems[TrackCode]), FILTER(ALL(Fact_WorkItems[TrackCode]), [Avance Ponderado %] > 0))
 		formatString: 0
 
+
+	measure 'User Stories abiertas' =
+			CALCULATE(COUNTROWS(Fact_WorkItems), Fact_WorkItems[IsUserStory] = TRUE(), Fact_WorkItems[StateNormalized] <> "Cerrado")
+		formatString: 0
+
+	measure 'Avance por Faena' = [Avance Ponderado %]
+		formatString: 0.00%
+
+	measure 'Avance por Track' = [Avance Ponderado %]
+		formatString: 0.00%
+
+	measure 'Items sin Faena' =
+			CALCULATE(COUNTROWS(Fact_WorkItems), ISBLANK(Fact_WorkItems[FaenaSeguimiento]) || Fact_WorkItems[FaenaSeguimiento] = "")
+		formatString: 0
+
+	measure 'Items sin Fecha Fin' =
+			CALCULATE(COUNTROWS(Fact_WorkItems), ISBLANK(Fact_WorkItems[FechaFinSeguimiento]))
+		formatString: 0
+
+	measure 'Items sin TipoTrabajo' =
+			CALCULATE(COUNTROWS(Fact_WorkItems), Fact_WorkItems[TipoTrabajo] = "Sin clasificar")
+		formatString: 0
+
+	measure 'Tracks activos' =
+			CALCULATE(DISTINCTCOUNT(Fact_WorkItems[TrackCode]), Fact_WorkItems[StateNormalized] <> "Cerrado")
+		formatString: 0
+
+
+	measure 'Tasks pendientes' = [Tasks Pendientes]
+		formatString: 0
+
+	measure 'Tasks cerradas' = [Tasks Cerradas]
+		formatString: 0
+
+	measure 'Tasks sin responsable' = [Tasks Sin Responsable]
+		formatString: 0
+
 	column WorkItemId
 		dataType: string
 		lineageTag: e61dc728-80ee-4838-a1da-fc10f2c046b8
@@ -183,6 +220,57 @@ table Fact_WorkItems
 		sourceColumn: TrackName
 
 		annotation SummarizationSetBy = Automatic
+
+
+	column FaenaOriginal
+		dataType: string
+		summarizeBy: none
+		sourceColumn: FaenaOriginal
+
+	column FaenaSeguimiento
+		dataType: string
+		summarizeBy: none
+		sourceColumn: FaenaSeguimiento
+
+	column FechaInicioOriginal
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: FechaInicioOriginal
+
+	column FechaFinOriginal
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: FechaFinOriginal
+
+	column FechaInicioSeguimiento
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: FechaInicioSeguimiento
+
+	column FechaFinSeguimiento
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: FechaFinSeguimiento
+
+	column TagsOriginal
+		dataType: string
+		summarizeBy: none
+		sourceColumn: TagsOriginal
+
+	column TagsSeguimiento
+		dataType: string
+		summarizeBy: none
+		sourceColumn: TagsSeguimiento
+
+	column TipoTrabajo
+		dataType: string
+		summarizeBy: none
+		sourceColumn: TipoTrabajo
+
+	column ResponsableSeguimiento
+		dataType: string
+		summarizeBy: none
+		sourceColumn: ResponsableSeguimiento
 
 	column FeatureWorkItemId
 		dataType: int64
