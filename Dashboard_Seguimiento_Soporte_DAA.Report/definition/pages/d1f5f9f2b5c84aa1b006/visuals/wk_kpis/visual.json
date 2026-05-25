@@ -1,0 +1,122 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "wk_kpis",
+  "position": {
+    "x": 20,
+    "y": 525,
+    "z": 1,
+    "height": 170,
+    "width": 1240,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Tracks activos"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Tracks activos",
+              "nativeQueryRef": "Tracks activos"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Tasks pendientes"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Tasks pendientes",
+              "nativeQueryRef": "Tasks pendientes"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Tasks cerradas"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Tasks cerradas",
+              "nativeQueryRef": "Tasks cerradas"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Tasks sin responsable"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Tasks sin responsable",
+              "nativeQueryRef": "Tasks sin responsable"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Items sin Faena"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Items sin Faena",
+              "nativeQueryRef": "Items sin Faena"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Items sin Fecha Fin"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Items sin Fecha Fin",
+              "nativeQueryRef": "Items sin Fecha Fin"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Items sin TipoTrabajo"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Items sin TipoTrabajo",
+              "nativeQueryRef": "Items sin TipoTrabajo"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

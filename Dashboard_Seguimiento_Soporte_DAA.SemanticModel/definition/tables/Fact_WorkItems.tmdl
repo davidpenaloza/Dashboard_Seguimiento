@@ -42,6 +42,153 @@ table Fact_WorkItems
 		formatString: 0
 		lineageTag: ba4a9962-9b81-42f0-bbed-04e6191c6500
 
+
+	measure 'Avance Global %' =
+			
+			DIVIDE(
+			    CALCULATE(COUNTROWS(Fact_WorkItems), Fact_WorkItems[StateNormalized] = "Done"),
+			    [Total Tasks],
+			    0
+			)
+		formatString: 0.00%
+
+	measure 'Avance Ponderado %' =
+			
+			DIVIDE(
+			    SUMX(
+			        FILTER(Fact_WorkItems, Fact_WorkItems[IsTask] = TRUE()),
+			        Fact_WorkItems[ProgressWeight] * IF(Fact_WorkItems[StateNormalized] = "Done", 1, 0)
+			    ),
+			    SUMX(FILTER(Fact_WorkItems, Fact_WorkItems[IsTask] = TRUE()), Fact_WorkItems[ProgressWeight]),
+			    0
+			)
+		formatString: 0.00%
+
+	measure 'Work Items con jerarquía incompleta' =
+			
+			CALCULATE(
+			    COUNTROWS(Fact_WorkItems),
+			    Fact_WorkItems[HierarchyStatus] <> "OK"
+			)
+		formatString: 0
+
+	measure 'Tracks sin clasificar' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT(Fact_WorkItems[TrackCode]),
+			    Fact_WorkItems[TrackCode] = "T00"
+			        || ISBLANK(Fact_WorkItems[TrackCode])
+			)
+		formatString: 0
+
+	measure 'Tasks sin User Story' =
+			
+			CALCULATE(
+			    COUNTROWS(Fact_WorkItems),
+			    Fact_WorkItems[IsTask] = TRUE(),
+			    ISBLANK(Fact_WorkItems[UserStoryWorkItemId])
+			)
+		formatString: 0
+
+	measure 'User Stories sin Feature' =
+			
+			CALCULATE(
+			    COUNTROWS(Fact_WorkItems),
+			    Fact_WorkItems[IsUserStory] = TRUE(),
+			    ISBLANK(Fact_WorkItems[FeatureWorkItemId])
+			)
+		formatString: 0
+
+
+	measure 'Tasks Cerradas' =
+			
+			CALCULATE(
+			    COUNTROWS(Fact_WorkItems),
+			    Fact_WorkItems[IsTask] = TRUE(),
+			    Fact_WorkItems[StateNormalized] = "Done"
+			)
+		formatString: 0
+
+	measure 'Tasks Pendientes' =
+			
+			CALCULATE(
+			    COUNTROWS(Fact_WorkItems),
+			    Fact_WorkItems[IsTask] = TRUE(),
+			    Fact_WorkItems[StateNormalized] IN {"To Do", "Pending", "New"}
+			)
+		formatString: 0
+
+	measure 'Tasks En Curso' =
+			
+			CALCULATE(
+			    COUNTROWS(Fact_WorkItems),
+			    Fact_WorkItems[IsTask] = TRUE(),
+			    Fact_WorkItems[StateNormalized] IN {"In Progress", "Active"}
+			)
+		formatString: 0
+
+	measure 'Tracks Prioritarios' =
+			
+			CALCULATE(DISTINCTCOUNT(Fact_WorkItems[TrackCode]), FILTER(ALL(Fact_WorkItems[TrackCode]), [Tasks Sin Responsable] + [Tasks Pendientes] > 0))
+		formatString: 0
+
+	measure 'Tracks con tareas pendientes' =
+			
+			CALCULATE(DISTINCTCOUNT(Fact_WorkItems[TrackCode]), FILTER(ALL(Fact_WorkItems[TrackCode]), [Tasks Pendientes] > 0))
+		formatString: 0
+
+	measure 'Tracks con tareas sin responsable' =
+			
+			CALCULATE(DISTINCTCOUNT(Fact_WorkItems[TrackCode]), FILTER(ALL(Fact_WorkItems[TrackCode]), [Tasks Sin Responsable] > 0))
+		formatString: 0
+
+	measure 'Tracks con avance 0%' =
+			
+			CALCULATE(DISTINCTCOUNT(Fact_WorkItems[TrackCode]), FILTER(ALL(Fact_WorkItems[TrackCode]), [Avance Ponderado %] = 0))
+		formatString: 0
+
+	measure 'Tracks con avance mayor a 0%' =
+			
+			CALCULATE(DISTINCTCOUNT(Fact_WorkItems[TrackCode]), FILTER(ALL(Fact_WorkItems[TrackCode]), [Avance Ponderado %] > 0))
+		formatString: 0
+
+
+	measure 'User Stories abiertas' =
+			CALCULATE(COUNTROWS(Fact_WorkItems), Fact_WorkItems[IsUserStory] = TRUE(), Fact_WorkItems[StateNormalized] <> "Cerrado")
+		formatString: 0
+
+	measure 'Avance por Faena' = [Avance Ponderado %]
+		formatString: 0.00%
+
+	measure 'Avance por Track' = [Avance Ponderado %]
+		formatString: 0.00%
+
+	measure 'Items sin Faena' =
+			CALCULATE(COUNTROWS(Fact_WorkItems), ISBLANK(Fact_WorkItems[FaenaSeguimiento]) || Fact_WorkItems[FaenaSeguimiento] = "")
+		formatString: 0
+
+	measure 'Items sin Fecha Fin' =
+			CALCULATE(COUNTROWS(Fact_WorkItems), ISBLANK(Fact_WorkItems[FechaFinSeguimiento]))
+		formatString: 0
+
+	measure 'Items sin TipoTrabajo' =
+			CALCULATE(COUNTROWS(Fact_WorkItems), Fact_WorkItems[TipoTrabajo] = "Sin clasificar")
+		formatString: 0
+
+	measure 'Tracks activos' =
+			CALCULATE(DISTINCTCOUNT(Fact_WorkItems[TrackCode]), Fact_WorkItems[StateNormalized] <> "Cerrado")
+		formatString: 0
+
+
+	measure 'Tasks pendientes' = [Tasks Pendientes]
+		formatString: 0
+
+	measure 'Tasks cerradas' = [Tasks Cerradas]
+		formatString: 0
+
+	measure 'Tasks sin responsable' = [Tasks Sin Responsable]
+		formatString: 0
+
 	column WorkItemId
 		dataType: string
 		lineageTag: e61dc728-80ee-4838-a1da-fc10f2c046b8
@@ -73,6 +220,57 @@ table Fact_WorkItems
 		sourceColumn: TrackName
 
 		annotation SummarizationSetBy = Automatic
+
+
+	column FaenaOriginal
+		dataType: string
+		summarizeBy: none
+		sourceColumn: FaenaOriginal
+
+	column FaenaSeguimiento
+		dataType: string
+		summarizeBy: none
+		sourceColumn: FaenaSeguimiento
+
+	column FechaInicioOriginal
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: FechaInicioOriginal
+
+	column FechaFinOriginal
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: FechaFinOriginal
+
+	column FechaInicioSeguimiento
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: FechaInicioSeguimiento
+
+	column FechaFinSeguimiento
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: FechaFinSeguimiento
+
+	column TagsOriginal
+		dataType: string
+		summarizeBy: none
+		sourceColumn: TagsOriginal
+
+	column TagsSeguimiento
+		dataType: string
+		summarizeBy: none
+		sourceColumn: TagsSeguimiento
+
+	column TipoTrabajo
+		dataType: string
+		summarizeBy: none
+		sourceColumn: TipoTrabajo
+
+	column ResponsableSeguimiento
+		dataType: string
+		summarizeBy: none
+		sourceColumn: ResponsableSeguimiento
 
 	column FeatureWorkItemId
 		dataType: int64
