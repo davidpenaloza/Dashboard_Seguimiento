@@ -1,9 +1,9 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
-  "name": "wk_s_track",
+  "name": "wk_s_state2",
   "position": {
     "x": 330,
-    "y": 10,
+    "y": 70,
     "z": 1,
     "height": 55,
     "width": 300,
@@ -23,11 +23,11 @@
                       "Entity": "Fact_WorkItems"
                     }
                   },
-                  "Property": "FaenaSeguimiento"
+                  "Property": "StateNormalized"
                 }
               },
-              "queryRef": "Fact_WorkItems.FaenaSeguimiento",
-              "nativeQueryRef": "FaenaSeguimiento"
+              "queryRef": "Fact_WorkItems.StateNormalized",
+              "nativeQueryRef": "StateNormalized"
             }
           ]
         }

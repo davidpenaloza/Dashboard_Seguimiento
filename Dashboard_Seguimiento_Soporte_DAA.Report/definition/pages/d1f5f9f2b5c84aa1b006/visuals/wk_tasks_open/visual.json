@@ -90,5 +90,23 @@
       }
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "f_weekly_yes",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_WorkItems"
+              }
+            },
+            "Property": "MostrarEnWeekly"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
   }
 }

@@ -1,9 +1,9 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
-  "name": "wk_s_track",
+  "name": "wk_s_etapa",
   "position": {
-    "x": 330,
-    "y": 10,
+    "x": 20,
+    "y": 70,
     "z": 1,
     "height": 55,
     "width": 300,
@@ -23,11 +23,11 @@
                       "Entity": "Fact_WorkItems"
                     }
                   },
-                  "Property": "FaenaSeguimiento"
+                  "Property": "EtapaSeguimiento"
                 }
               },
-              "queryRef": "Fact_WorkItems.FaenaSeguimiento",
-              "nativeQueryRef": "FaenaSeguimiento"
+              "queryRef": "Fact_WorkItems.EtapaSeguimiento",
+              "nativeQueryRef": "EtapaSeguimiento"
             }
           ]
         }

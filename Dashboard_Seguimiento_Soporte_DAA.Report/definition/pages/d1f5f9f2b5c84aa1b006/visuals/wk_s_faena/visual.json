@@ -23,11 +23,11 @@
                       "Entity": "Fact_WorkItems"
                     }
                   },
-                  "Property": "FaenaSeguimiento"
+                  "Property": "WeeklySeguimiento"
                 }
               },
-              "queryRef": "Fact_WorkItems.FaenaSeguimiento",
-              "nativeQueryRef": "FaenaSeguimiento"
+              "queryRef": "Fact_WorkItems.WeeklySeguimiento",
+              "nativeQueryRef": "WeeklySeguimiento"
             }
           ]
         }

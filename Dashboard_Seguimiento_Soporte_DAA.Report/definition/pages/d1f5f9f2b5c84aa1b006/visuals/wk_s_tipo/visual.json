@@ -23,11 +23,11 @@
                       "Entity": "Fact_WorkItems"
                     }
                   },
-                  "Property": "TipoTrabajo"
+                  "Property": "TrackName"
                 }
               },
-              "queryRef": "Fact_WorkItems.TipoTrabajo",
-              "nativeQueryRef": "TipoTrabajo"
+              "queryRef": "Fact_WorkItems.TrackName",
+              "nativeQueryRef": "TrackName"
             }
           ]
         }

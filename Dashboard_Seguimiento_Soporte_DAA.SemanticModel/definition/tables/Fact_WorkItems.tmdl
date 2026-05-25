@@ -189,6 +189,28 @@ table Fact_WorkItems
 	measure 'Tasks sin responsable' = [Tasks Sin Responsable]
 		formatString: 0
 
+
+	measure 'Total Work Items Weekly' = CALCULATE([Total Work Items], Fact_WorkItems[MostrarEnWeekly] = "Sí")
+		formatString: 0
+	measure 'User Stories Weekly' = CALCULATE([Total User Stories], Fact_WorkItems[MostrarEnWeekly] = "Sí")
+		formatString: 0
+	measure 'Tasks Weekly' = CALCULATE([Total Tasks], Fact_WorkItems[MostrarEnWeekly] = "Sí")
+		formatString: 0
+	measure 'Tasks Pendientes Weekly' = CALCULATE([Tasks Pendientes], Fact_WorkItems[MostrarEnWeekly] = "Sí")
+		formatString: 0
+	measure 'Tasks Cerradas Weekly' = CALCULATE([Tasks Cerradas], Fact_WorkItems[MostrarEnWeekly] = "Sí")
+		formatString: 0
+	measure 'Tasks Sin Responsable Weekly' = CALCULATE([Tasks Sin Responsable], Fact_WorkItems[MostrarEnWeekly] = "Sí")
+		formatString: 0
+	measure 'Avance Weekly %' = CALCULATE([Avance Ponderado %], Fact_WorkItems[MostrarEnWeekly] = "Sí")
+		formatString: 0.00%
+	measure 'Items sin Weekly' = CALCULATE(COUNTROWS(Fact_WorkItems), Fact_WorkItems[WeeklySeguimiento] = "Sin weekly")
+		formatString: 0
+	measure 'Items excluidos por incidencia' = CALCULATE(COUNTROWS(Fact_WorkItems), Fact_WorkItems[MotivoWeekly] = "Incidencia excluida de vista weekly")
+		formatString: 0
+	measure 'Items sin ResponsableSeguimiento' = CALCULATE(COUNTROWS(Fact_WorkItems), Fact_WorkItems[MostrarEnWeekly] = "Sí", ISBLANK(Fact_WorkItems[ResponsableSeguimiento]))
+		formatString: 0
+
 	column WorkItemId
 		dataType: string
 		lineageTag: e61dc728-80ee-4838-a1da-fc10f2c046b8
@@ -261,6 +283,27 @@ table Fact_WorkItems
 		dataType: string
 		summarizeBy: none
 		sourceColumn: TagsSeguimiento
+
+
+	column WeeklySeguimiento
+		dataType: string
+		summarizeBy: none
+		sourceColumn: WeeklySeguimiento
+
+	column MostrarEnWeekly
+		dataType: string
+		summarizeBy: none
+		sourceColumn: MostrarEnWeekly
+
+	column MotivoWeekly
+		dataType: string
+		summarizeBy: none
+		sourceColumn: MotivoWeekly
+
+	column EtapaSeguimiento
+		dataType: string
+		summarizeBy: none
+		sourceColumn: EtapaSeguimiento
 
 	column TipoTrabajo
 		dataType: string

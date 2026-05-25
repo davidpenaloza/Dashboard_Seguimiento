@@ -23,11 +23,11 @@
                       "Entity": "Fact_WorkItems"
                     }
                   },
-                  "Property": "StateNormalized"
+                  "Property": "TipoTrabajo"
                 }
               },
-              "queryRef": "Fact_WorkItems.StateNormalized",
-              "nativeQueryRef": "StateNormalized"
+              "queryRef": "Fact_WorkItems.TipoTrabajo",
+              "nativeQueryRef": "TipoTrabajo"
             }
           ]
         }
