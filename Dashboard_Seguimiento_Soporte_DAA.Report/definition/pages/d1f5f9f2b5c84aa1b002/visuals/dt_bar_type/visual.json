@@ -1,0 +1,57 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "dt_bar_type",
+  "position": {
+    "x": 1070,
+    "y": 470,
+    "z": 1,
+    "height": 220,
+    "width": 190,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "WorkItemType"
+                }
+              },
+              "queryRef": "Fact_WorkItems.WorkItemType",
+              "nativeQueryRef": "WorkItemType",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Total Tasks"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Total Tasks",
+              "nativeQueryRef": "Total Tasks"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "dt_matriz",
+  "position": {
+    "x": 20,
+    "y": 180,
+    "z": 1,
+    "height": 280,
+    "width": 820,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "FeatureTitle"
+                }
+              },
+              "queryRef": "Fact_WorkItems.FeatureTitle",
+              "nativeQueryRef": "FeatureTitle"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "UserStoryTitle"
+                }
+              },
+              "queryRef": "Fact_WorkItems.UserStoryTitle",
+              "nativeQueryRef": "UserStoryTitle"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "TaskTitle"
+                }
+              },
+              "queryRef": "Fact_WorkItems.TaskTitle",
+              "nativeQueryRef": "TaskTitle"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "DisplayTitle"
+                }
+              },
+              "queryRef": "Fact_WorkItems.DisplayTitle",
+              "nativeQueryRef": "DisplayTitle"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

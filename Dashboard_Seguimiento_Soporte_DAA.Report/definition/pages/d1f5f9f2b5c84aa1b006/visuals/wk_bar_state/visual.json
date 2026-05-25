@@ -1,0 +1,75 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "wk_bar_state",
+  "position": {
+    "x": 860,
+    "y": 340,
+    "z": 1,
+    "height": 170,
+    "width": 400,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "StateNormalized"
+                }
+              },
+              "queryRef": "Fact_WorkItems.StateNormalized",
+              "nativeQueryRef": "StateNormalized",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_WorkItems"
+                    }
+                  },
+                  "Property": "Total Tasks"
+                }
+              },
+              "queryRef": "Fact_WorkItems.Total Tasks",
+              "nativeQueryRef": "Total Tasks"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "f_weekly_yes",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_WorkItems"
+              }
+            },
+            "Property": "MostrarEnWeekly"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}
